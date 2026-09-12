@@ -20,3 +20,4 @@ jobs:
       - run: pytest -q
       - run: python -m experiments.gate0_hidden_linearity
       - run: python -m experiments.gate1_conjugacy
+      - run: python -m experiments.gate2_evolutionary_forgetting
