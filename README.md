@@ -177,7 +177,62 @@ The AI-facing version is therefore not simply "keep diversity." It is:
 
 > **Preserve a basis of genuinely different solution procedures long enough that context can cheaply select the one whose inductive bias fits the current situation.**
 
-That suggests later gates with actual small neural policies: specialists that solve tasks by different circuits, weight averages that fail both tasks, and a context-dependent operator that selects a circuit without retraining from scratch.
+## Gate 4 — same answer, different algorithm
+
+A parameter cluster is not yet a computational mode. Two networks should count as different approaches only when a counterfactual intervention reveals a difference in **how** they obtain an answer.
+
+Gate 4 uses a tiny two-path neural policy,
+
+\[
+y=\tanh\!\left(w_d x_0+w_r x_1x_2\right),
+\]
+
+with a direct path and a relational path. In the observed world the cues are perfectly correlated,
+
+\[
+x_0=x_1x_2,
+\]
+
+so the direct specialist `(4,0)` and the relational specialist `(0,4)` produce exactly the same outputs and essentially the same tiny error. Behavior alone cannot distinguish the algorithms.
+
+Then the correlation is broken. Context A makes `x_0` causal; context B makes `x_1x_2` causal. The two specialists now fail in opposite worlds. Their Jacobian/pathway signatures reveal the difference that the original outputs hid.
+
+Run:
+
+```bash
+python -m experiments.gate4_same_answer_different_algorithm
+```
+
+The reserve is a distribution over the tiny policies. It retains both pathway families. Applying the A fitness operator sends essentially all mass to the direct family; B sends essentially all mass to the relational family, without an explicit router network choosing an expert.
+
+The parameter average is deliberately attacked. The reserve centroid uses both cues and performs extremely well in the correlated seen world, but once the correlation is broken it has MSE about `0.5` in both intervention worlds while either intact specialist is almost exact in its own world. Averaging the mechanisms therefore creates a third computation rather than preserving both original ones.
+
+This gives a stricter definition for the object GAx is looking for:
+
+> **A computational mode is a family of mechanisms that is approximately coherent under the search dynamics and has a distinct counterfactual response / Jacobian / pathway signature, even when another mode produces the same observed answers.**
+
+That suggests an operator-level description. If `P_k` projects onto computational family `k`, a useful context operator should have strong within-family gain and controlled cross-family leakage:
+
+\[
+g_k(c)\sim \rho\!\left(P_kL_cP_k\right),
+\qquad
+\ell_{jk}(c)\sim \left\|P_jL_cP_k\right\|,\quad j\neq k.
+\]
+
+Routing is the context changing the relative `g_k`; preservation requires not letting the unwanted families vanish or leak into an averaged mechanism too quickly.
+
+This is the mathematical core of the emerging **spectral router** idea:
+
+\[
+\boxed{
+\text{context}
+\to L_c
+\to \text{relative modal gain changes}
+\to \text{one computational mechanism dominates}.
+}
+\]
+
+The next step is the self-rewriting version: let consequences modify `L_c` itself and ask whether learning can improve routing while keeping the computational families identifiable rather than collapsing them into one mode.
 
 ## Repository direction
 
