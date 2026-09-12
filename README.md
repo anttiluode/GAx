@@ -145,6 +145,40 @@ So the deeper question is no longer only "where does the GA converge?"
 
 > **Which evolutionary distinctions survive, where are they carried, and which selection question makes them visible before the search purifies them away?**
 
+## Gate 3 — strategy separator
+
+A population can do more than retain alternative answers. It can retain **different approaches for different situations**.
+
+Gate 3 constructs two incompatible specialists, `A` and `B`, and a context-free reserve that rewards either specialist without averaging them. The same frozen reserve is then asked two different fitness questions.
+
+```bash
+python -m experiments.gate3_strategy_separator
+```
+
+For the current deterministic 8-bit control, the reserve places about half of its mass near each specialist. One context-A selection step sends about `99%` of the population toward A; the opposite context sends about `99%` toward B. The two queried populations have total-variation distance about `0.985`.
+
+So the population is not merely uncertain between two point answers. It acts like a **separator of approaches**:
+
+\[
+\text{shared reserve}
+\xrightarrow{\text{context A}}
+\text{approach A},
+\qquad
+\text{shared reserve}
+\xrightarrow{\text{context B}}
+\text{approach B}.
+\]
+
+The attacker is repeated use of one approach. After roughly ten A-only generations, the B specialist mass is driven below `1e-10`; switching to B then takes many generations instead of approximately one. Fast purification therefore buys present efficiency by destroying cheap access to a different future strategy.
+
+This is the bridge to neural conditional computation. Mixture-of-experts systems normally make the separation explicit with experts and a router. GAx asks whether an analogous separation can be represented dynamically as **persistent modes plus a context-dependent selection operator**. The context is the question; the currently useful strategy is the mode that question amplifies.
+
+The AI-facing version is therefore not simply "keep diversity." It is:
+
+> **Preserve a basis of genuinely different solution procedures long enough that context can cheaply select the one whose inductive bias fits the current situation.**
+
+That suggests later gates with actual small neural policies: specialists that solve tasks by different circuits, weight averages that fail both tasks, and a context-dependent operator that selects a circuit without retraining from scratch.
+
 ## Repository direction
 
 GAx is deliberately the **math / optimization / AI-facing branch**. It does not need a neuron analogy to justify the object. If the operator mathematics produces something useful, the biological branch can later meet it from the other direction.
