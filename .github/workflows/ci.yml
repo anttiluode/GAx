@@ -23,3 +23,4 @@ jobs:
       - run: python -m experiments.gate2_evolutionary_forgetting
       - run: python -m experiments.gate3_strategy_separator
       - run: python -m experiments.gate4_same_answer_different_algorithm
+      - run: python -m experiments.gate5_forecast_before_generation
