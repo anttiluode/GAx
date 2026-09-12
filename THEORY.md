@@ -284,3 +284,121 @@ That points toward learned proposals, black-box optimization, particle inference
 **Gate 5 — Branch lifetime.** Relate the observed lifetime of two evolutionary modes to `|lambda_1/lambda_0|`; then deliberately create near-degeneracy and test the prediction.
 
 The repository should stay on this mathematical track. Biology can later borrow whatever survives.
+
+## 9. Persistent highways through a changing operator
+
+The phrase "persistent modes through a changing operator" needs one mathematical correction. For a fixed operator, eigenvectors are natural modes. For
+
+\[
+q_{t+1}=L_t q_t,
+\]
+
+an eigenvector of `L_t` need not remain meaningful one step later. The relevant object is a **covariant family of subspaces** that is carried forward by the operator product.
+
+Write such a family as
+
+\[
+E_k(t).
+\]
+
+The ideal covariance condition is
+
+\[
+\boxed{L_t E_k(t)=E_k(t+1).}
+\]
+
+More realistically there is small leakage into other families. Under the regularity assumptions of the multiplicative ergodic theorem, the asymptotic version is the Oseledets splitting and its Lyapunov exponents. In finite experiments GAx should use finite-time covariant/singular subspaces and not assume the asymptotic theorem applies automatically.
+
+This gives a sharper candidate for a **highway**:
+
+> A highway is not a frozen direction. It is a computational subspace that deforms while remaining approximately covariant under the sequence of operators.
+
+For a time window `T`, define a finite-time growth rate for a vector in family `k`,
+
+\[
+\gamma_k(t,T)
+=\frac1T\log
+\frac{\|L_{t+T-1}\cdots L_t v_k(t)\|}
+{\|v_k(t)\|}.
+\]
+
+Then routing is naturally a change in **relative finite-time growth rates**. Context `c` does not have to invoke an expert explicitly. It can alter the effective operator so that
+
+\[
+\gamma_a(c) > \gamma_b(c)
+\]
+
+for one situation and reverse the inequality for another.
+
+The fixed-operator forgetting-time formula becomes the local approximation
+
+\[
+\tau_{1/2,k}
+\approx
+\frac{\log 2}{\gamma_0-\gamma_k}
+\]
+
+when the finite-time Lyapunov gap is roughly stationary. Thus Sigh-style forgetting times survive the move from eigenvalues to changing operators.
+
+### Measuring whether a computational highway is real
+
+Let `P_k(t)` project onto computational family `k`, where the family may be identified empirically from counterfactual behavior, Jacobians, activations, or pathway use rather than raw parameter distance.
+
+Three quantities matter:
+
+1. **within-family gain**
+
+\[
+g_k(t)=\|P_k(t+1)L_tP_k(t)\|;
+\]
+
+2. **cross-family leakage**
+
+\[
+\ell_{jk}(t)=\|P_j(t+1)L_tP_k(t)\|,\qquad j\neq k;
+\]
+
+3. **family separation**, measured for example by principal angles between `E_j(t)` and `E_k(t)`.
+
+A useful spectral router should produce strong context-dependent contrast in the `g_k` while keeping leakage and family collapse bounded.
+
+This makes the "lethal average" failure precise. If two computational families are replaced by one centroid direction, the principal angle vanishes and counterfactual distinctions disappear even if current-task loss remains low.
+
+### Self-rewriting spectral router
+
+Now let consequences change the operator itself:
+
+\[
+L_{t+1}=L_t+\Delta L_t(R_t,H_t),
+\]
+
+where `R_t` is consequence/reward and `H_t` is whatever history the algorithm retains.
+
+The self-rewriting-router problem is not merely to increase reward. It is to learn `Delta L_t` such that future contexts acquire the right modal gain **without destroying the distinguishability of the computational families**.
+
+Schematically,
+
+\[
+\boxed{
+\text{context}
+\to L_t
+\to \text{relative mode growth}
+\to \text{computation}
+\to \text{consequence}
+\to \Delta L_t
+\to \text{future routing changes}.
+}
+\]
+
+A natural experimental objective is therefore multi-part:
+
+\[
+\text{performance}
++\alpha\,\text{routing contrast}
+-\beta\,\text{cross-mode leakage}
+-\chi\,\text{collapse of subspace angles}.
+\]
+
+This is stricter than mixture-of-experts routing. The modes are not required to be fixed modules, and the router is not required to be a separate classifier. The modes may be moving covariant computational subspaces, while history changes the operator that determines their future gains.
+
+Gate 4's neural intervention test supplies the first operational definition of such a computational family: two mechanisms can be behaviorally identical in the observed world yet be distinct because interventions reveal different Jacobian/pathway signatures. The next GAx gates should ask whether those counterfactually distinct families can remain covariant while the routing operator learns.
