@@ -232,7 +232,35 @@ This is the mathematical core of the emerging **spectral router** idea:
 }
 \]
 
-The next step is the self-rewriting version: let consequences modify `L_c` itself and ask whether learning can improve routing while keeping the computational families identifiable rather than collapsing them into one mode.
+## Gate 5 — forecast before generation
+
+Gate 5 returns to the original GAx question: can past generations predict an unrealized future generation?
+
+The forecaster receives only the observed normalized populations and the normalization / mean-fitness factors already produced by those past transitions. Those factors reconstruct the hidden linear history
+
+\[
+q_g=\left(\prod_{i<g}z_i\right)p_g,
+\]
+
+then a minimum-norm operator is fit only on the observed Krylov span. The future is predicted first; only afterward is the hidden `L` allowed to generate the audited population.
+
+Run:
+
+```bash
+python -m experiments.gate5_forecast_before_generation
+```
+
+The result tracks the Krylov rank directly. At two observed transitions the history fit is only slightly better than a population-velocity extrapolator. As new independent Krylov directions arrive, forecast error collapses. At numerical rank 8, the five-generation-ahead forecast has L1 error about `2.9e-10`, versus about `1.95e-1` for velocity extrapolation.
+
+The weaker evolutionary branch is also forecast correctly: at the same history/horizon its true future mass is `0.113912070389`, while the history-only prediction is `0.113912070402`.
+
+So, for this deterministic fixed-operator control,
+
+\[
+\boxed{\text{past generations are a sensor of the hidden search operator on the cyclic subspace they excite}.}
+\]
+
+This is deliberately not yet a claim about finite stochastic populations, crossover, or changing `L_g`. See [`GATE5_RESULTS.md`](GATE5_RESULTS.md) for the full receipt and claim boundary.
 
 ## Repository direction
 
