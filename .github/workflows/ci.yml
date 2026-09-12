@@ -22,3 +22,4 @@ jobs:
       - run: python -m experiments.gate1_conjugacy
       - run: python -m experiments.gate2_evolutionary_forgetting
       - run: python -m experiments.gate3_strategy_separator
+      - run: python -m experiments.gate4_same_answer_different_algorithm
