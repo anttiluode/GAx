@@ -79,6 +79,72 @@ L1 distance to Perron population after 30 generations: 0.010716
 
 The first two numbers are the key sanity check: the normalized generational dynamics are exactly the projectivization of the positive linear operator, up to floating-point error.
 
+## Gate 2 — the SighImageSuper bridge: evolutionary forgetting times
+
+`SighImageSuper` began with repeated application of one image operator,
+
+\[
+x_n=A^n x_0,
+\]
+
+and found that modes acquire different forgetting times until the surviving Nyquist checkerboard dominates. GAx has the same algebra after the positive lift:
+
+\[
+q_g=L^g q_0.
+\]
+
+The population normalization does not destroy modal ratios; asymptotically it measures every mode relative to the Perron mode. Therefore a subdominant mode with eigenvalue `lambda_i` decays relative to the Perron mode `lambda_0` as
+
+\[
+\left|\frac{\lambda_i}{\lambda_0}\right|^g.
+\]
+
+Its evolutionary half-life is
+
+\[
+\boxed{
+g_{1/2,i}=\frac{\log(1/2)}{\log|\lambda_i/\lambda_0|}.
+}
+\]
+
+Run:
+
+```bash
+python -m experiments.gate2_evolutionary_forgetting
+```
+
+The gate compares an unequal two-peak landscape with a nearly tied one. The point is not merely that the GA converges. It predicts **how long an alternative evolutionary mode remains recoverable before purification erases it**.
+
+This creates a direct dictionary with Sigh:
+
+| SighImageSuper | GAx |
+|---|---|
+| image state `x_n` | unnormalized population `q_g` |
+| image operator `A` | mutation-selection operator `L` |
+| recursive frame | generation |
+| surviving checkerboard mode | Perron population mode |
+| fading spectral cloud | mixture of subdominant evolutionary modes |
+| modal half-life | evolutionary forgetting time |
+| transient/Krylov dimension | number of still-distinguishable evolutionary directions |
+
+The important tradeoff is immediate: a large spectral gap gives rapid optimization/purification but rapidly destroys alternative modes; a small gap preserves separated possibilities for much longer.
+
+## Beyond the fixed operator
+
+The bridge is deliberately only the first layer. SighImageSuper later showed that memory is not exhausted by slow eigenmodes: history can travel through nilpotent state, be written into changed material, and depend on the probe used to reveal it.
+
+GAx has direct counterparts waiting to be tested:
+
+- **fixed `L`** — modal memory and purification;
+- **finite-population genealogy** — travelling ancestry/history not visible in the current marginal alone;
+- **adaptive `L_g`** — successful history rewrites the future search operator;
+- **changed fitness / selection pressure** — the same population can be asked a different question and expose a different future;
+- **counterfactual fork** — freeze one generation, apply two temporary selection operators, and compare the futures without committing either one.
+
+So the deeper question is no longer only "where does the GA converge?"
+
+> **Which evolutionary distinctions survive, where are they carried, and which selection question makes them visible before the search purifies them away?**
+
 ## Repository direction
 
 GAx is deliberately the **math / optimization / AI-facing branch**. It does not need a neuron analogy to justify the object. If the operator mathematics produces something useful, the biological branch can later meet it from the other direction.
